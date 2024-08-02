@@ -9,13 +9,11 @@ import (
 	"strings"
 )
 
-// Map for Roman numerals to integers
 var romanToInt = map[string]int{
 	"I": 1, "IV": 4, "V": 5, "IX": 9, "X": 10,
 	"XL": 40, "L": 50, "XC": 90, "C": 100,
 }
 
-// Function to convert Roman numeral to integer
 func romanToInteger(roman string) (int, error) {
 	result := 0
 	i := 0
@@ -37,7 +35,6 @@ func romanToInteger(roman string) (int, error) {
 	return result, nil
 }
 
-// Function to convert integer to Roman numeral
 func integerToRoman(num int) (string, error) {
 	if num <= 0 || num > 100 {
 		return "", errors.New("результат выходит за пределы допустимого диапазона для римских цифр")
@@ -56,7 +53,6 @@ func integerToRoman(num int) (string, error) {
 	return result, nil
 }
 
-// Function to perform arithmetic operations
 func calculate(a, b int, operator string) (int, error) {
 	switch operator {
 	case "+":
@@ -81,7 +77,6 @@ func main() {
 	input, _ := reader.ReadString('\n')
 	input = strings.TrimSpace(input)
 
-	// Split input into parts
 	parts := strings.Split(input, " ")
 	if len(parts) != 3 {
 		panic("недопустимый формат: выражение должно быть в форме 'a + b'")
@@ -89,7 +84,6 @@ func main() {
 
 	aStr, operator, bStr := parts[0], parts[1], parts[2]
 
-	// Determine if input is Roman or Arabic
 	aArabic, errA := strconv.Atoi(aStr)
 	bArabic, errB := strconv.Atoi(bStr)
 	isRoman := errA != nil && errB != nil
