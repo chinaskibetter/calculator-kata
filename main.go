@@ -9,30 +9,54 @@ import (
 	"strings"
 )
 
+// Map for Roman numerals to integers
 var romanToInt = map[string]int{
-	"I": 1, "II": 2, "III": 3, "IV": 4, "V": 5,
-	"VI": 6, "VII": 7, "VIII": 8, "IX": 9, "X": 10,
+	"I": 1, "IV": 4, "V": 5, "IX": 9, "X": 10,
+	"XL": 40, "L": 50, "XC": 90, "C": 100,
 }
 
-var intToRoman = []string{
-	"", "I", "II", "III", "IV", "V",
-	"VI", "VII", "VIII", "IX", "X",
-}
-
+// Function to convert Roman numeral to integer
 func romanToInteger(roman string) (int, error) {
-	if value, exists := romanToInt[roman]; exists {
-		return value, nil
+	result := 0
+	i := 0
+	for i < len(roman) {
+		if i+1 < len(roman) {
+			if val, ok := romanToInt[roman[i:i+2]]; ok {
+				result += val
+				i += 2
+				continue
+			}
+		}
+		if val, ok := romanToInt[string(roman[i])]; ok {
+			result += val
+			i++
+		} else {
+			return 0, errors.New("неверная римская цифра")
+		}
 	}
-	return 0, errors.New("неверная римская цифра1 ")
+	return result, nil
 }
 
+// Function to convert integer to Roman numeral
 func integerToRoman(num int) (string, error) {
-	if num <= 0 || num >= len(intToRoman) {
+	if num <= 0 || num > 100 {
 		return "", errors.New("результат выходит за пределы допустимого диапазона для римских цифр")
 	}
-	return intToRoman[num], nil
+
+	val := []int{100, 90, 50, 40, 10, 9, 5, 4, 1}
+	symbol := []string{"C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"}
+
+	result := ""
+	for i := 0; num > 0; i++ {
+		for num >= val[i] {
+			num -= val[i]
+			result += symbol[i]
+		}
+	}
+	return result, nil
 }
 
+// Function to perform arithmetic operations
 func calculate(a, b int, operator string) (int, error) {
 	switch operator {
 	case "+":
@@ -57,6 +81,7 @@ func main() {
 	input, _ := reader.ReadString('\n')
 	input = strings.TrimSpace(input)
 
+	// Split input into parts
 	parts := strings.Split(input, " ")
 	if len(parts) != 3 {
 		panic("недопустимый формат: выражение должно быть в форме 'a + b'")
@@ -64,6 +89,7 @@ func main() {
 
 	aStr, operator, bStr := parts[0], parts[1], parts[2]
 
+	// Determine if input is Roman or Arabic
 	aArabic, errA := strconv.Atoi(aStr)
 	bArabic, errB := strconv.Atoi(bStr)
 	isRoman := errA != nil && errB != nil
